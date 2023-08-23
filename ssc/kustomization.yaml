@@ -1,0 +1,47 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../common/external-snapshotter.yaml
+  - ../common/csi-powerstore-namespace.yaml
+  - ../common/csi-powerstore-secret.yaml
+  - ../common/csi-powerstore-2.5.0.yaml
+  - ../common/storageclass-powerstore-topology.yaml
+  - ../common/volumesnapshotclass-powerstore.yaml
+  - ../common/metallb.yaml
+  - ../common/metallb-config.yaml
+  - ../common/nginx-ingress-controller.yaml
+  - ../common/ppdm-rbac.yaml
+patches:
+  - path: ./patches/patch-deployment.yaml
+    target:
+      kind: Deployment
+  - path: ./patches/patch-daemonset.yaml
+    target:
+      kind: DaemonSet
+  - path: ./patches/patch-nginx-ingress-controller.yaml
+    target:
+      group: core
+      version: v1
+      kind: Service
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+  - path: ./patches/patch-metallb-config.yaml
+    target:
+      group: metallb.io
+      version: v1beta1
+      kind: IPAddressPool
+      name: first-pool
+      namespace: metallb-system
+  - path: ./patches/patch-powerstore-storage-class.yaml
+    target:
+      group: core
+      version: v1
+      kind: StorageClass
+      name: powerstore-topology
+  - path: ./patches/patch-csi-powerstore.yaml
+    target:
+      group: core
+      version: v1
+      kind: Deployment
+      name: powerstore-controller
+      namespace: csi-powerstore
