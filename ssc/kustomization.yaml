@@ -30,3 +30,9 @@ patches:
       kind: Deployment
       name: powerstore-controller
       namespace: csi-powerstore
+  - path: ./patches/patch-powerstore-storage-class.yaml
+    target:
+      group: storage.k8s.io
+      version: v1
+      kind: StorageClass
+      name: powerstore-topology
